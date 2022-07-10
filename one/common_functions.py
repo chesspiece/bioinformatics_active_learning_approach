@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from skew import hamming_str
+from .skew import hamming_str
 import numpy as np
 import numpy.typing as npt
 from numba import njit, prange
