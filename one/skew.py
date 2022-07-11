@@ -27,10 +27,6 @@ def compute_skew(
 @njit()
 def hamming_str(dna: str, dna_compare: str) -> int:
     return sum([0 if ncl_1 == ncl_2 else 1 for ncl_1, ncl_2 in zip(dna, dna_compare)])
-    #return np.where(
-    #    [ncl_1 == ncl_2 for ncl_1, ncl_2 in zip(dna, dna_compare)], 0, 1
-    #).sum()
-
 
 def hamming(
     dna_arr: npt.NDArray[np.int8], dna_arr_compare: npt.NDArray[np.int8]

@@ -1,5 +1,5 @@
 from numba import njit
-from skew import hamming_str
+from .skew import hamming_str
 
 
 @njit()

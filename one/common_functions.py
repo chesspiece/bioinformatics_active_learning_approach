@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 from numba import njit, prange
 
-
+@njit()
 def neighbours(
     dna_pat: str,
     d=0,

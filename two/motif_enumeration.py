@@ -1,10 +1,15 @@
-from one.common_functions import neighbours
+from numba import njit, prange
+from numba.typed import List
+
+from one.cs_excercise import neighbours
 from one.skew import hamming_str
 
 
-def motif_enum(dna: list[str], k: int, d: int) -> set[str]:
+@njit()
+def motif_enum(dna: list[str], k: int, d: int) -> list[str]:
     """
     Find if motif presented in all dna strings or substrings with at most 2d mismatches
+    Very slow implementation
     Input data:
     -----------
         dna - input dna string
@@ -28,14 +33,14 @@ def motif_enum(dna: list[str], k: int, d: int) -> set[str]:
                     break
             else:
                 patterns.append(k_mer)
-    return set(patterns)
+    return patterns
 
 
 if __name__ == "__main__":
     with open("input.txt", "r") as f:
         k, d = [int(x) for x in f.readline().strip().split()]
-        dna_list = f.readline().strip().split()
-    res = motif_enum(dna_list, k, d)
+        dna_list = List(f.readline().strip().split())
+    res = set(motif_enum(dna_list, k, d))
 
     with open("output.txt", "w") as f:
         f.write(" ".join(res))
