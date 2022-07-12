@@ -1,4 +1,5 @@
-from numba import njit, prange
+import numpy as np
+from numba import njit
 from numba.typed import List
 
 from one.cs_excercise import neighbours
@@ -15,6 +16,9 @@ def motif_enum(dna: list[str], k: int, d: int) -> list[str]:
         dna - input dna string
         d - allowed number of mismathces
         k - k-mer (length of dna substring)
+    Return data:
+    ------------
+        List of motifs which are presented in all dna strings with at most 2d hamming distance
     """
     patterns = []
     for i in range(0, len(dna[0]) - k + 1):
@@ -36,11 +40,34 @@ def motif_enum(dna: list[str], k: int, d: int) -> list[str]:
     return patterns
 
 
+@njit()
+def pat_string_dists(pat: str, strng_list: list[str]) -> int:
+    pat_length = len(pat)
+    distance: int = 0
+    for strng in strng_list:
+        curr_dist = np.iinfo(np.int64).max
+        for i in range(0, len(strng) - pat_length + 1):
+            curr_sbstrng = strng[i : i + pat_length]
+            tmp_dist = hamming_str(pat, curr_sbstrng)
+            if tmp_dist < curr_dist:
+                curr_dist = tmp_dist
+        distance += curr_dist
+    return distance
+
+
 if __name__ == "__main__":
     with open("input.txt", "r") as f:
-        k, d = [int(x) for x in f.readline().strip().split()]
+        pat_str = f.readline().strip()
         dna_list = List(f.readline().strip().split())
-    res = set(motif_enum(dna_list, k, d))
+    res = pat_string_dists(pat_str, dna_list)
 
     with open("output.txt", "w") as f:
-        f.write(" ".join(res))
+        f.write(str(res))
+
+    # with open("input.txt", "r") as f:
+    #    k, d = [int(x) for x in f.readline().strip().split()]
+    #    dna_list = List(f.readline().strip().split())
+    # res = set(motif_enum(dna_list, k, d))
+
+    # with open("output.txt", "w") as f:
+    #    f.write(" ".join(res))
