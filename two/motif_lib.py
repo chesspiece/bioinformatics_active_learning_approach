@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 from numba import njit
 from numba.typed import List
 
@@ -53,6 +54,55 @@ def pat_string_dists(pat: str, strng_list: list[str]) -> int:
                 curr_dist = tmp_dist
         distance += curr_dist
     return distance
+
+
+@njit()
+def compute_profile_mat(dna_list: list[str]) -> npt.NDArray[np.float64]:
+    """
+    Compute profile matrix from the list of dna stringd
+    """
+    profile_mat = np.zeros((4, len(dna_list[0])), dtype=np.float64)
+    num_of_str = len(dna_list)
+    dna_dct = {"A": 0, "C": 1, "G": 2, "T": 3}
+    for dna in dna_list:
+        for idx, ncltd in enumerate(dna):
+            profile_mat[dna_dct[ncltd], idx] += 1 / num_of_str
+    return profile_mat
+
+
+def compute_entropy(profile_mat: npt.NDArray[np.float64]) -> float:
+    """
+    Compute entropy of profile matrix
+    Entropy of profile matrix is defined as sum of entropy of columns
+    """
+    # tmp = profile_mat * np.log2(profile_mat)
+    tmp = profile_mat * np.where(np.isclose(profile_mat, 0), 0, np.log2(profile_mat))
+    # profile_mat * np.where(np.isclose(profile_mat, 0), 0, np.log2(profile_mat))
+    # tmp[np.isnan(tmp)] = 0
+    return -np.sum(tmp)
+
+
+@njit()
+def median_string_dna(dna_list: list[str], k: int, init_str: str) -> str:
+    """
+    Find a motif which minimizes hamming distance score for motif matrix
+    Inpit data:
+    -----------
+        dna_list - list of dna strings
+        k - size of k-mers
+        init_string - initial k-mer pattern, Needed for numba
+    Output data:
+    -----------
+        Found motiff
+    """
+    fin_dist = np.iinfo(np.int64).max
+    fin_pat = ""
+    for pat in neighbours(init_str, k):
+        curr_dist = pat_string_dists(pat, dna_list)
+        if curr_dist < fin_dist:
+            fin_dist = curr_dist
+            fin_pat = pat
+    return fin_pat
 
 
 if __name__ == "__main__":
