@@ -70,16 +70,13 @@ def compute_profile_mat(dna_list: list[str]) -> npt.NDArray[np.float64]:
     return profile_mat
 
 
-def compute_entropy(profile_mat: npt.NDArray[np.float64]) -> float:
+@njit()
+def compute_entropy(profile_mat: npt.NDArray[np.float64], eps: float = 1e-8) -> float:
     """
     Compute entropy of profile matrix
     Entropy of profile matrix is defined as sum of entropy of columns
     """
-    # tmp = profile_mat * np.log2(profile_mat)
-    tmp = profile_mat * np.where(np.isclose(profile_mat, 0), 0, np.log2(profile_mat))
-    # profile_mat * np.where(np.isclose(profile_mat, 0), 0, np.log2(profile_mat))
-    # tmp[np.isnan(tmp)] = 0
-    return -np.sum(tmp)
+    return -np.sum(profile_mat * np.log2(profile_mat + eps))
 
 
 @njit()
@@ -103,6 +100,33 @@ def median_string_dna(dna_list: list[str], k: int, init_str: str) -> str:
             fin_dist = curr_dist
             fin_pat = pat
     return fin_pat
+
+
+@njit()
+def most_probable_k_mer(profile_mat: npt.NDArray[np.float64], dna: str, k: int) -> str:
+    """
+    Find most probable k-mer in dna string.
+    Input data:
+    -----------
+        profile_mat - matrix with probabilities of each nucleotide in each position of dna string
+        dna - dna string
+        k - k-mer string size
+    Output data:
+    ------------
+        Most probable k-mer which is presented in dna
+    """
+    dna_dct = {"A": 0, "C": 1, "G": 2, "T": 3}
+    prb = 0
+    fin_k_mer = dna[0 : 0 + k]
+    for i in range(0, len(dna) - k + 1):
+        curr_prb = 1
+        k_mer = dna[i : i + k]
+        for idx, ncltd in enumerate(k_mer):
+            curr_prb *= profile_mat[dna_dct[ncltd], idx]
+        if curr_prb > prb:
+            prb = curr_prb
+            fin_k_mer = k_mer
+    return fin_k_mer
 
 
 if __name__ == "__main__":
