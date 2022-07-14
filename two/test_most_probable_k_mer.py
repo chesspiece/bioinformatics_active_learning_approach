@@ -1,7 +1,7 @@
 import numpy as np
 from numba.typed import List
 
-from two.motif_lib import greedy_1
+from two.motif_lib import most_probable_k_mer
 
 if __name__ == "__main__":
     with open("input.txt", "r") as f:
@@ -13,7 +13,7 @@ if __name__ == "__main__":
             profile_mat[idx, :] = np.array(
                 [float(x) for x in f.readline().strip().split()]
             )
-    res = greedy_1(profile_mat, dna_str, k)
+    res = most_probable_k_mer(profile_mat, dna_str, k)
 
     with open("output.txt", "w") as f:
         f.write("".join(res))
