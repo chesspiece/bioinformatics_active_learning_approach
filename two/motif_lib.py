@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import numpy as np
 import numpy.typing as npt
 from numba import njit, prange
@@ -5,8 +7,6 @@ from numba.typed import List
 
 from one.cs_excercise import neighbours
 from one.skew import hamming_str
-
-from copy import deepcopy
 
 
 @njit()
@@ -251,25 +251,23 @@ def gibbs_sampling_motif_finder(
     dna_quant = len(dna_list)
     start_idx = np.random.randint(low=0, high=len(dna_list[0]) - k + 1, size=dna_quant)
     motif = [dna_str[i : i + k] for dna_str, i in zip(dna_list, start_idx)]
+    best_motif = motif.copy()
     # score = score_motif_count_mat(compute_motif_count_mat(List(motif)))
     score = compute_entropy(compute_profile_mat(List(motif), pseudocounts=False))
     for _ in range(N):
         change_idx = np.random.randint(low=0, high=dna_quant)
         use_motif = List(motif[0:change_idx] + motif[change_idx + 1 : :])
-        curr_motif = motif.copy()
-        curr_motif[change_idx] = most_probable_k_mer(
-                compute_profile_mat(use_motif, pseudocounts=True),
-                dna_list[change_idx],
-                k,
-            )
-        # curr_score = score_motif_count_mat(compute_motif_count_mat(List(curr_motif)))
-        curr_score = compute_entropy(
-            compute_profile_mat(List(curr_motif), pseudocounts=False)
+        motif[change_idx] = most_probable_k_mer(
+            compute_profile_mat(use_motif, pseudocounts=True),
+            dna_list[change_idx],
+            k,
         )
+        # curr_score = score_motif_count_mat(compute_motif_count_mat(List(curr_motif)))
+        curr_score = compute_entropy(compute_profile_mat(List(motif), pseudocounts=False))
         if curr_score < score:
             score = curr_score
-            motif = curr_motif
-    return (motif, score)
+            best_motif = motif.copy()
+    return (best_motif, score)
 
 
 if __name__ == "__main__":
