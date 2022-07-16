@@ -1,12 +1,14 @@
 from numba import njit
+from numba.typed import List
 
 from .skew import hamming_str
 
 
-@njit()
+#@njit()
 def neighbours(
     dna_pat: str,
     d=0,
+    choice_pat = ["A", "G", "C", "T"]
 ) -> list[str]:
     """
     Generate d-neighbourhood of dna_pat.
@@ -22,12 +24,12 @@ def neighbours(
     if d == 0:
         return [dna_pat]
     if len(dna_pat) == 1:
-        return ["A", "G", "C", "T"]
+        return choice_pat
     neighborhood: list[str] = []
-    suffix_neighboors = neighbours(dna_pat[1::], d=d)
+    suffix_neighboors = neighbours(dna_pat[1::], d=d, choice_pat=choice_pat)
     for subpat in suffix_neighboors:
         if hamming_str(dna_pat[1::], subpat) < d:
-            for ncl_idx in ["A", "G", "C", "T"]:
+            for ncl_idx in choice_pat:
                 neighborhood.append(ncl_idx + subpat)
         else:
             neighborhood.append(dna_pat[0] + subpat)
