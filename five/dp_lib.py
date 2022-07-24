@@ -66,21 +66,24 @@ def middle_node(str_1, str_2, match_reward=1, mismatch_penalty=0, indel_penalty=
     str_2_middle = str_2[:middle]
 
     def comp_i_col(str_1, str_2, match_reward, mismatch_penalty, indel_penalty):
-        s = np.zeros((len(str_1) + 1, len(str_2) + 1), dtype=np.int64)
+        s = np.zeros((len(str_1) + 1, 2), dtype=np.int64)
         for i in range(1, len(str_1) + 1):
             s[i, 0] = s[i - 1, 0] - indel_penalty
-        for i in range(1, len(str_2) + 1):
-            s[0, i] = s[0, i - 1] - indel_penalty
-        for i in range(1, len(str_1) + 1):
-            for j in range(1, len(str_2) + 1):
+        s[0, 1] = s[0, 0] - indel_penalty
+
+        for j in range(1, len(str_2) + 1):
+            for i in range(1, len(str_1) + 1):
                 match = (
                     match_reward if str_1[i - 1] == str_2[j - 1] else -mismatch_penalty
                 )
-                s[i, j] = max(
-                    s[i - 1, j] - indel_penalty,
-                    s[i, j - 1] - indel_penalty,
-                    s[i - 1, j - 1] + match,
+                s[i, j % 2] = max(
+                    s[i - 1, j % 2] - indel_penalty,
+                    s[i, (j - 1) % 2] - indel_penalty,
+                    s[i - 1, (j - 1) % 2] + match,
                 )
+        if len(str_2) % 2 == 0:
+            s = s[:, ::-1]
+
         return s
 
     so_m = comp_i_col(
