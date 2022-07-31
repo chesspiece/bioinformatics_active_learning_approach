@@ -57,7 +57,7 @@ def lcs_backtrack(str_1, str_2, match_reward=1, mismatch_penalty=0, indel_penalt
                 backtrack[i, j] = 4
     return backtrack, s[len(str_1), len(str_2)]
 
-
+@njit()
 def lcs_backtrack_3d(
     str_1, str_2, str_3, match_reward=1, mismatch_penalty=0, indel_penalty=0
 ):
@@ -120,8 +120,6 @@ def lcs_backtrack_3d(
                     backtrack[i, j, k] = 6
                 else:
                     backtrack[i, j, k] = 7
-    # print(backtrack)
-    # print(s)
     return (
         s[len(str_1), len(str_2), len(str_3)],
         backtrack,
@@ -213,9 +211,9 @@ def middle_node(str_1, str_2, match_reward=1, mismatch_penalty=0, indel_penalty=
 
     def comp_i_col(str_1, str_2, match_reward, mismatch_penalty, indel_penalty):
         score = np.zeros((len(str_1) + 1, 2), dtype=np.int64)
+        # not needed probably
         for i in range(1, len(str_1) + 1):
             score[i, 0] = score[i - 1, 0] - indel_penalty
-        # score[0, 1] = score[0, 0] - indel_penalty
 
         for j in range(1, len(str_2) + 1):
             score[0, j % 2] = score[0, (j + 1) % 2] - indel_penalty
