@@ -1,3 +1,5 @@
+from collections import defaultdict
+from copy import deepcopy
 from dataclasses import dataclass
 
 import numpy as np
@@ -179,14 +181,13 @@ def neighbours_joining_phylogeny(
 ) -> dict[int, dict[int, int]]:
     max_nodes, _ = distance_matrix.shape
     nodes_dict = {i: 0 for i in range(max_nodes)}
-    # tree: dict[int, dict[int, int]] = {i: {} for i in range(max_nodes)}
     max_nodes -= 1
     tree, _ = __neighbours_joining_phylogeny__(distance_matrix, max_nodes, nodes_dict)
     return tree
 
 
 def __neighbours_joining_phylogeny__(
-        distance_matrix: npt.NDArray[np.floating], max_node: int, nodes_dict: dict[int, int]
+    distance_matrix: npt.NDArray[np.floating], max_node: int, nodes_dict: dict[int, int]
 ) -> tuple[dict[int, dict[int, int]], int]:
     num_nodes, _ = distance_matrix.shape
 
@@ -198,7 +199,10 @@ def __neighbours_joining_phylogeny__(
         _ = nodes_dict.pop(node_i)
         _ = nodes_dict.pop(node_j)
 
-        ret = {node_i: {node_j: distance_matrix[0, 1]}, node_j: {node_i: distance_matrix[1, 0]}}
+        ret = {
+            node_i: {node_j: distance_matrix[0, 1]},
+            node_j: {node_i: distance_matrix[1, 0]},
+        }
         return ret, max_node
 
     total_distance = distance_matrix.sum(axis=1)
@@ -253,11 +257,93 @@ def __neighbours_joining_phylogeny__(
     nodes_dict[max_node] = 0
     tree, _ = __neighbours_joining_phylogeny__(distance_matrix, max_node, nodes_dict)
 
-    #tree[max_node] = {node_i: limb_length_i, node_j: limb_length_j}
+    # tree[max_node] = {node_i: limb_length_i, node_j: limb_length_j}
     tree[max_node][node_i] = limb_length_i
     tree[max_node][node_j] = limb_length_j
-    #tree[node_i][max_node] = limb_length_i
-    #tree[node_j][max_node] = limb_length_j
+    # tree[node_i][max_node] = limb_length_i
+    # tree[node_j][max_node] = limb_length_j
     tree[node_i] = {max_node: limb_length_i}
     tree[node_j] = {max_node: limb_length_j}
     return tree, max_node
+
+
+def is_leaf(tree: dict[str, list[str]], node: str) -> bool:
+    if not tree[node]:
+        return True
+    return False
+
+
+def __backtrack__(
+        tree: dict[str, list[str]], backtrack, root: str, letter, ddct: dict[str, str], char_idx: int
+) -> dict[str, str]:
+    ncl_dict = {"A": 0, "C": 1, "G": 2, "T": 3}
+    ncl_dict_rev = {ncl_dict[k]: k for k in ncl_dict.keys()}
+    if is_leaf(tree, root):
+        ddct[root] = root[char_idx]
+        return ddct
+    daughter, son = tree[root]
+    letter1, letter2 = backtrack[root][0]
+    __backtrack__(tree, backtrack, daughter, letter1[letter], ddct, char_idx)
+    __backtrack__(tree, backtrack, son, letter2[letter], ddct, char_idx)
+    ddct[root] = ncl_dict_rev[letter]
+    return ddct
+
+
+def __small_parsimony__(
+    tree: dict[str, list[str]],
+    leaf_characters: dict[str, str],
+    root: str,
+    char_idx: int,
+) -> tuple[int, dict[str, str]]:
+    ncl_dict = {"A": 0, "C": 1, "G": 2, "T": 3}
+
+    leaf_keys = list(leaf_characters.keys())
+    keys = list(tree.keys())
+    tags = {k: 0 for k in leaf_keys + keys}
+    score = {k: np.array([1] * 4) for k in leaf_keys + keys}
+    # backtrack = {k: np.array([-1] * 4) for k in leaf_keys + keys}
+    backtrack = {k: [] for k in leaf_keys + keys}
+
+    a = np.ones((4, 4))
+    np.fill_diagonal(a, 0)
+
+    # a = np.eye(4)
+
+    for node in leaf_keys:
+        tags[node] = 1
+        score[node][ncl_dict[leaf_characters[node][char_idx]]] = 0
+
+    for _ in range(len(tree.keys())):
+        for node in keys:
+            daughter, son = tree[node]
+            if tags[node] == 0 and tags[daughter] == 1 and tags[son] == 1:
+                score[node] = np.min(score[son] + a, axis=1) + np.min(
+                    score[daughter] + a, axis=1
+                )
+                backtrack[node].append(
+                    [
+                        np.argmin(score[daughter] + a, axis=1),
+                        np.argmin(score[son] + a, axis=1),
+                    ]
+                )
+                tags[node] = 1
+    t_dct = defaultdict(str)
+    res = __backtrack__(tree, backtrack, root, np.argmin(score[root]), t_dct, char_idx)
+    return int(np.min(score[root])), res
+
+
+def small_parsimony(
+    tree: dict[str, list[str]], leaf_characters: dict[str, str], root: str
+) -> int:
+    dna_len = len(list(leaf_characters.values())[0])
+    trees = [None] * dna_len
+    full_metric = 0
+    for idx in range(dna_len):
+        metric, comp_tree = __small_parsimony__(deepcopy(tree), leaf_characters, root, idx)
+        trees[idx] = deepcopy(comp_tree)
+        full_metric += metric
+    true_tree = defaultdict(str)
+    for t in trees:
+        for key, value in t.items():
+            true_tree[key] += value
+    return len(trees)
