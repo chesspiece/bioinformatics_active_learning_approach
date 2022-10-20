@@ -338,7 +338,10 @@ def __small_parsimony__(
 
 
 def small_parsimony(
-    tree: dict[str, list[str]], leaf_characters: dict[str, str], root: str
+    tree: dict[str, list[str]],
+    leaf_characters: dict[str, str],
+    root: str,
+    additional_root=False,
 ) -> tuple[int, dict[str, list[str]]]:
     dna_len = len(list(leaf_characters.values())[0])
     trees = [None] * dna_len
@@ -353,6 +356,8 @@ def small_parsimony(
     for t in trees:
         for key, values in t.items():
             correted_tree_names[key] += values
+    if additional_root:
+        correted_tree_names[root] = root
     true_tree: dict[str, list[str]] = defaultdict(list)
     for key, values in tree.items():
         for node in values:
