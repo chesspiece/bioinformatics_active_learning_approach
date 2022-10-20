@@ -274,7 +274,12 @@ def is_leaf(tree: dict[str, list[str]], node: str) -> bool:
 
 
 def __backtrack__(
-        tree: dict[str, list[str]], backtrack, root: str, letter, ddct: dict[str, str], char_idx: int
+    tree: dict[str, list[str]],
+    backtrack,
+    root: str,
+    letter,
+    ddct: dict[str, str],
+    char_idx: int,
 ) -> dict[str, str]:
     ncl_dict = {"A": 0, "C": 1, "G": 2, "T": 3}
     ncl_dict_rev = {ncl_dict[k]: k for k in ncl_dict.keys()}
@@ -334,16 +339,23 @@ def __small_parsimony__(
 
 def small_parsimony(
     tree: dict[str, list[str]], leaf_characters: dict[str, str], root: str
-) -> int:
+) -> tuple[int, dict[str, list[str]]]:
     dna_len = len(list(leaf_characters.values())[0])
     trees = [None] * dna_len
     full_metric = 0
     for idx in range(dna_len):
-        metric, comp_tree = __small_parsimony__(deepcopy(tree), leaf_characters, root, idx)
+        metric, comp_tree = __small_parsimony__(
+            deepcopy(tree), leaf_characters, root, idx
+        )
         trees[idx] = deepcopy(comp_tree)
         full_metric += metric
-    true_tree = defaultdict(str)
+    correted_tree_names: dict[str, str] = defaultdict(str)
     for t in trees:
-        for key, value in t.items():
-            true_tree[key] += value
-    return len(trees)
+        for key, values in t.items():
+            correted_tree_names[key] += values
+    true_tree: dict[str, list[str]] = defaultdict(list)
+    for key, values in tree.items():
+        for node in values:
+            true_tree[correted_tree_names[key]].append(correted_tree_names[node])
+            true_tree[correted_tree_names[node]].append(correted_tree_names[key])
+    return full_metric, true_tree

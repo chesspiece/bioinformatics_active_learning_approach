@@ -1,10 +1,11 @@
-from collections import defaultdict
 import sys
+from collections import defaultdict
 
+from one.skew import hamming_str
 from seven.tree_lib import small_parsimony
 
 if __name__ == "__main__":
-    with open("./input/input_7_6.txt") as f:
+    with open("./input/input_7_6.txt", "r") as f:
         n_leaves = int(f.readline().strip())
         tree: dict[str, list[str]] = defaultdict(list)
         leafs: dict[str, str] = defaultdict(str)
@@ -20,5 +21,9 @@ if __name__ == "__main__":
     except NameError:
         print("Input file was empty")
         sys.exit()
-    res = small_parsimony(tree, leafs, root)
-
+    final_score, true_tree = small_parsimony(tree, leafs, root)
+    with open("output.txt", "w") as f:
+        f.write(f"{final_score}\n")
+        for node, node_neighbours in true_tree.items():
+            for neighbour in node_neighbours:
+                f.write(f"{node}->{neighbour}:{hamming_str(node, neighbour)}\n")
