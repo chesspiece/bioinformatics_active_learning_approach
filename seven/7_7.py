@@ -2,32 +2,31 @@ import sys
 from collections import defaultdict
 
 from one.skew import hamming_str
-from seven.tree_lib import small_parsimony, undirected2directed
+from seven.tree_lib import small_parsimony, undirected2directed, insert_root
 
 if __name__ == "__main__":
     with open("./input/input_7_7.txt", "r") as f:
         n_leaves = int(f.readline().strip())
         tree: dict[str, list[str]] = defaultdict(list)
         leafs: dict[str, str] = defaultdict(str)
-        for idx in range(2*n_leaves):
-            #f.readline().strip().split("->")
+        for idx in range(2 * n_leaves):
+            # f.readline().strip().split("->")
             first_node, second_node = f.readline().strip().split("->")
             tree[first_node].append(second_node)
-            if "A" in second_node or "C" in second_node or "G" in second_node or "T" in second_node:
+            if (
+                "A" in second_node
+                or "C" in second_node
+                or "G" in second_node
+                or "T" in second_node
+            ):
                 leafs[second_node] = second_node
         for idx, line in enumerate(f):
-            #if idx % 2 == 0:
+            # if idx % 2 == 0:
             #    continue
             first_node, second_node = line.strip().split("->")
             tree[first_node].append(second_node)
     try:
-        tree[first_node].pop()
-        tree[second_node].pop()
-        root="root"
-        tree[root].append(first_node)
-        tree[root].append(second_node)
-        tree[first_node].append(root)
-        tree[second_node].append(root)
+        root = insert_root(tree)
     except NameError:
         print("Input file was empty")
         sys.exit()

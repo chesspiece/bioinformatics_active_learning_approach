@@ -352,17 +352,20 @@ def small_parsimony(
         )
         trees[idx] = deepcopy(comp_tree)
         full_metric += metric
-    correted_tree_names: dict[str, str] = defaultdict(str)
+    corrected_tree_names: dict[str, str] = defaultdict(str)
     for t in trees:
         for key, values in t.items():
-            correted_tree_names[key] += values
+            corrected_tree_names[key] += values
     if additional_root:
-        correted_tree_names[root] = root
+        corrected_tree_names[root] = root
+    """
     true_tree: dict[str, list[str]] = defaultdict(list)
     for key, values in tree.items():
         for node in values:
             true_tree[correted_tree_names[key]].append(correted_tree_names[node])
             true_tree[correted_tree_names[node]].append(correted_tree_names[key])
+    """
+    true_tree = directed2undirected(tree, corrected_tree_names)
     return full_metric, true_tree
 
 
@@ -371,7 +374,8 @@ def undirected2directed(tree: dict[str, list[str]], root: str):
     Convert undirected binary tree, into directed descenent from root binary tree
     Input data:
     -----------
-        tree - Undirected binary tree. Modified inplace into directed binary tree. Root is the first node and direction is descendant from rot to leafes
+        tree - Undirected binary tree. Modified inplace into directed binary tree.
+               Root is the first node and direction is descendant from rot to leafes.
         root - root of tree
     Output data:
     ------------
@@ -388,3 +392,42 @@ def undirected2directed(tree: dict[str, list[str]], root: str):
     undirected2directed(tree, son)
     undirected2directed(tree, daughter)
     return
+
+
+def directed2undirected(
+    tree: dict[str, list[str]], correct_names: dict[str, str] = {}
+) -> dict[str, list[str]]:
+    """
+    Convert directed binary tree, into undirected descenent from root binary tree
+    Input data:
+    -----------
+        tree - Undirected binary tree.
+    Output data:
+    ------------
+        true_tree - undirected binary tree based on tree
+    """
+    true_tree: dict[str, list[str]] = defaultdict(list)
+    for node, adjacent_nodes in tree.items():
+        for adj_node in adjacent_nodes:
+            if not correct_names:
+                true_tree[adj_node].append(node)
+                true_tree[node].append(adj_node)
+            else:
+                true_tree[correct_names[adj_node]].append(correct_names[node])
+                true_tree[correct_names[node]].append(correct_names[adj_node])
+    return true_tree
+
+
+def insert_root(tree: dict[str, list[str]], root_name: str = "root") -> str:
+    try:
+        # node, adj_nodes = list(tree.items())[0]
+        node, adj_nodes = next(iter(tree.items()))
+        adj_node = adj_nodes[0]
+        tree[node].remove(adj_node)
+        tree[adj_node].remove(node)
+        tree[root_name] = [node, adj_node]
+        tree[node].append(root_name)
+        tree[adj_node].append(root_name)
+        return root_name
+    except Exception:
+        return "Error"
