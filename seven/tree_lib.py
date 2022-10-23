@@ -306,13 +306,10 @@ def __small_parsimony__(
     keys = list(tree.keys())
     tags = {k: 0 for k in leaf_keys + keys}
     score = {k: np.array([1] * 4) for k in leaf_keys + keys}
-    # backtrack = {k: np.array([-1] * 4) for k in leaf_keys + keys}
     backtrack = {k: [] for k in leaf_keys + keys}
 
     a = np.ones((4, 4))
     np.fill_diagonal(a, 0)
-
-    # a = np.eye(4)
 
     for node in leaf_keys:
         tags[node] = 1
@@ -320,7 +317,10 @@ def __small_parsimony__(
 
     for _ in range(len(tree.keys())):
         for node in keys:
-            daughter, son = tree[node]
+            try:
+                daughter, son = tree[node]
+            except Exception:
+                continue
             if tags[node] == 0 and tags[daughter] == 1 and tags[son] == 1:
                 score[node] = np.min(score[son] + a, axis=1) + np.min(
                     score[daughter] + a, axis=1
@@ -364,3 +364,27 @@ def small_parsimony(
             true_tree[correted_tree_names[key]].append(correted_tree_names[node])
             true_tree[correted_tree_names[node]].append(correted_tree_names[key])
     return full_metric, true_tree
+
+
+def undirected2directed(tree: dict[str, list[str]], root: str):
+    """
+    Convert undirected binary tree, into directed descenent from root binary tree
+    Input data:
+    -----------
+        tree - Undirected binary tree. Modified inplace into directed binary tree. Root is the first node and direction is descendant from rot to leafes
+        root - root of tree
+    Output data:
+    ------------
+        None. Tree is modified inplace
+    """
+    node = root
+    if is_leaf(tree, node):
+        # directed_tree[node] = []
+        return
+    daughter, son = tree[node]
+    # directed_tree[node] = [daughter, son]
+    tree[son].remove(node)
+    tree[daughter].remove(node)
+    undirected2directed(tree, son)
+    undirected2directed(tree, daughter)
+    return
