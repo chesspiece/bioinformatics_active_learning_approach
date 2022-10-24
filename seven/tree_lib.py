@@ -352,19 +352,14 @@ def small_parsimony(
         )
         trees[idx] = deepcopy(comp_tree)
         full_metric += metric
+
     corrected_tree_names: dict[str, str] = defaultdict(str)
     for t in trees:
         for key, values in t.items():
             corrected_tree_names[key] += values
     if additional_root:
         corrected_tree_names[root] = root
-    """
-    true_tree: dict[str, list[str]] = defaultdict(list)
-    for key, values in tree.items():
-        for node in values:
-            true_tree[correted_tree_names[key]].append(correted_tree_names[node])
-            true_tree[correted_tree_names[node]].append(correted_tree_names[key])
-    """
+
     true_tree = directed2undirected(tree, corrected_tree_names)
     return full_metric, true_tree
 
@@ -431,3 +426,25 @@ def insert_root(tree: dict[str, list[str]], root_name: str = "root") -> str:
         return root_name
     except Exception:
         return "Error"
+
+
+def delete_root(tree: dict[str, list[str]], root_name: str = "root"):
+    """
+    Delete root in the undirected binary tree
+    Input data:
+    -----------
+        tree - undrected binary tree
+        root_name - key of root node in the dictionary
+    Output date:
+    ------------
+        None. tree is modified inplace
+    """
+    try:
+        son, daughter = tree[root_name]
+        tree[son].remove(root_name)
+        tree[daughter].remove(root_name)
+        tree[son].append(daughter)
+        tree[daughter].append(son)
+        del tree[root_name]
+    except KeyError:
+        return "Root does not exists in the tree"
