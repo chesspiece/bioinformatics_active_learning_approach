@@ -2,7 +2,8 @@ import sys
 from collections import defaultdict
 
 from one.skew import hamming_str
-from seven.tree_lib import small_parsimony, undirected2directed, insert_root, delete_root
+from seven.tree_lib import (delete_root, insert_root, small_parsimony,
+                            undirected2directed)
 
 if __name__ == "__main__":
     with open("./input/input_7_7.txt", "r") as f:
@@ -32,14 +33,11 @@ if __name__ == "__main__":
         sys.exit()
     undirected2directed(tree, root)
     final_score, true_tree = small_parsimony(tree, leafs, root, additional_root=True)
-    #root_son, root_daughter = true_tree[root]
-    #true_tree[root_son].append(root_daughter)
-    #true_tree[root_daughter].append(root_son)
     delete_root(true_tree, root)
     with open("output.txt", "w") as f:
         f.write(f"{final_score}\n")
         for node, node_neighbours in true_tree.items():
             for neighbour in node_neighbours:
-                #if node == root or neighbour == root:
+                # if node == root or neighbour == root:
                 #    continue
                 f.write(f"{node}->{neighbour}:{hamming_str(node, neighbour)}\n")

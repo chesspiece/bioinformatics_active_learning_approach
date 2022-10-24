@@ -320,6 +320,10 @@ def __small_parsimony__(
             try:
                 daughter, son = tree[node]
             except Exception:
+                """
+                Continue on leafs node. Leafs node don't have any adjacent nodes -> tree[node] = [] for leafes.
+                All other nodes have two adjacent nodes
+                """
                 continue
             if tags[node] == 0 and tags[daughter] == 1 and tags[son] == 1:
                 score[node] = np.min(score[son] + a, axis=1) + np.min(
@@ -414,8 +418,17 @@ def directed2undirected(
 
 
 def insert_root(tree: dict[str, list[str]], root_name: str = "root") -> str:
+    """
+    Insert root into unrooted undirected binary tree
+    Input data:
+    -----------
+        tree - unroted undirected binary tree
+        root_name - name (dictionary key) of a root to be inserted into tree
+    Output data:
+    ------------
+        None. tree is modified inplace
+    """
     try:
-        # node, adj_nodes = list(tree.items())[0]
         node, adj_nodes = next(iter(tree.items()))
         adj_node = adj_nodes[0]
         tree[node].remove(adj_node)
