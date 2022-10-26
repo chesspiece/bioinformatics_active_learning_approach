@@ -7,6 +7,7 @@ import numpy.typing as npt
 import scipy as scp
 
 from mapped_query import MappedQueue
+from one.skew import hamming_str
 
 
 def dijkstra(adj_list: dict[int, dict[int, int]], start_edge: int, v_quant: int):
@@ -400,7 +401,7 @@ def directed2undirected(
     Convert directed binary tree, into undirected descenent from root binary tree
     Input data:
     -----------
-        tree - Undirected binary tree.
+        tree - Undirected binary tree
     Output data:
     ------------
         true_tree - undirected binary tree based on tree
@@ -461,3 +462,89 @@ def delete_root(tree: dict[str, list[str]], root_name: str = "root"):
         del tree[root_name]
     except KeyError:
         return "Root does not exists in the tree"
+
+
+def nearest_neighbour_tree(
+    tree: dict[str, list[str]], first_node: str, second_node: str
+) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+    first_neighbour = deepcopy(tree)
+
+    first_neighbour[first_node].remove(second_node)
+    first_neighbour[second_node].remove(first_node)
+
+    f_son, f_daughter = first_neighbour[first_node]
+    s_son, s_daughter = first_neighbour[second_node]
+
+    first_neighbour[first_node].remove(f_son)
+    first_neighbour[first_node].remove(f_daughter)
+    first_neighbour[second_node].remove(s_son)
+    first_neighbour[second_node].remove(s_daughter)
+
+    for node in [f_son, f_daughter]:
+        first_neighbour[node].remove(first_node)
+    for node in [s_son, s_daughter]:
+        first_neighbour[node].remove(second_node)
+
+    second_neighbour = deepcopy(first_neighbour)
+
+    first_neighbour[f_son].append(first_node)
+    first_neighbour[s_son].append(first_node)
+    first_neighbour[f_daughter].append(second_node)
+    first_neighbour[s_daughter].append(second_node)
+    first_neighbour[first_node] = [f_son, s_son, second_node]
+    first_neighbour[second_node] = [f_daughter, s_daughter, first_node]
+
+    second_neighbour[f_son].append(first_node)
+    second_neighbour[s_daughter].append(first_node)
+    second_neighbour[f_daughter].append(second_node)
+    second_neighbour[s_son].append(second_node)
+    second_neighbour[first_node] = [f_son, s_daughter, second_node]
+    second_neighbour[second_node] = [f_daughter, s_son, first_node]
+    return first_neighbour, second_neighbour
+
+
+def nearest_neighbor_parsimony(tree, leafe_characters, f):
+    score = np.inf
+    root = insert_root(tree)
+    undirected2directed(tree, root)
+    new_score, new_tree = small_parsimony(
+        tree, leafe_characters, root, additional_root=True
+    )
+    delete_root(new_tree)
+    idx = 0
+    while new_score < score:
+        score = new_score
+        ret_tree = new_tree
+
+        neigh_score = np.inf
+        for node in ret_tree.keys():
+            for n_node in ret_tree[node]:
+                if len(ret_tree[node]) < 2 or len(ret_tree[n_node]) < 2:
+                    continue
+                check_tree = deepcopy(ret_tree)
+                for neigh_tree in list(
+                    nearest_neighbour_tree(check_tree, node, n_node)
+                ):
+                    root = insert_root(neigh_tree)
+                    undirected2directed(neigh_tree, root)
+                    neigh_new_score, neigh_new_tree = small_parsimony(
+                        neigh_tree,
+                        leafe_characters,
+                        root,
+                        additional_root=True,
+                    )
+                    delete_root(neigh_new_tree)
+                    if neigh_score < neigh_new_score:
+                        neigh_score = neigh_new_score
+                    if new_score > neigh_new_score:
+                        new_score = neigh_new_score
+                        new_tree = neigh_new_tree
+
+        if idx != 0:
+            f.write(f"{score}\n")
+            for node, node_neighbours in ret_tree.items():
+                for neighbour in node_neighbours:
+                    f.write(f"{node}->{neighbour}:{hamming_str(node, neighbour)}\n")
+            f.write(f"\n")
+        idx += 1
+    return
