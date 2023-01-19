@@ -13,7 +13,8 @@ function farthest_first_traversal(points_arr::Array{<:Number}, num_centers::Int)
             if i in save_idx
                 continue
             end
-            curr_dist = minimum(sum((centers .- points_arr[i:i, :]) .^ 2, dims=2))
+            #curr_dist = minimum(sum((centers .- points_arr[i:i, :]) .^ 2, dims=2))
+            curr_dist = minimum(sum((@. (centers - points_arr[i:i, :]) ^ 2), dims=2))
             if curr_dist > dist
                 dist = curr_dist
                 elm = i
