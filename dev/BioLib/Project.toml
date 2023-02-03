@@ -1,0 +1,4 @@
+name = "BioLib"
+uuid = "e02d0394-d04d-4fca-a8d5-6d5c9d771d2e"
+authors = ["Manshilin Oleg <manshilin.o@gmail.com>"]
+version = "0.1.0"

@@ -7,19 +7,42 @@ license = "AGPLV3"
 
 [tool.poetry.dependencies]
 python = "3.10.9"
-numba = "^0.55.1"
-numpy = "^1.21"
-scipy = "^1.7"
-pyright = "^1.1.248"
+numba = "^0.56"
+numpy = "^1.23"
+scipy = "^1.9"
+pyright = "^1.1.292"
 tqdm = "^4.64.0"
-debugpy = "^1.6.5"
 
 [tool.poetry.dev-dependencies]
 ipython = "^8.3.0"
 pytest = "^7.1.2"
 black = "^22.3.0"
 flake8 = "^4.0.1"
+debugpy = "^1.6.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["one", "two", "three", "four", "five", "six_v1", "seven", "fasta_parser"]
+exclude = [ "input",
+            "**/__pycache__",
+]
+#ignore = ["src/oldstuff"]
+#defineConstant = { DEBUG = true }
+#stubPath = "src/stubs"
+#venv = "env367"
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+pythonVersion = "3.10"
+pythonPlatform = "Linux"
+
+#executionEnvironments = [
+#  { root = "src/web", pythonVersion = "3.5", pythonPlatform = "Windows", extraPaths = [ "src/service_libs" ] },
+#  { root = "src/sdk", pythonVersion = "3.0", extraPaths = [ "src/backend" ] },
+#  { root = "src/tests", extraPaths = ["src/tests/e2e", "src/sdk" ]},
+#  { root = "src" }
+#]

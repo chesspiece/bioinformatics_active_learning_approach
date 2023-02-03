@@ -1,3 +1,5 @@
 [deps]
+BioLib = "e02d0394-d04d-4fca-a8d5-6d5c9d771d2e"
 Debugger = "31a5f54b-26ea-5ae9-a837-f05ce5417438"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
