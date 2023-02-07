@@ -9,7 +9,7 @@ from typing import Iterator, List, TextIO, Tuple
 
 def yield_line(f_d: TextIO) -> Iterator[Tuple[str, str]]:
     """
-    Generator function to read
+    Generator function to read Fasta files
     Input:
     ------
         f_d - descriptor of text file

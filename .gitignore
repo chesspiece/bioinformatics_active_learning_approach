@@ -6,3 +6,5 @@
 *.txt
 *.zip
 *.7z
+fasta_parser/.hypothesis/unicode_data/13.0.0/charmap.json.gz
+.gitignore

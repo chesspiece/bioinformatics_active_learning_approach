@@ -1,10 +1,6 @@
-import sys
 from collections import defaultdict
 
-from one.skew import hamming_str
-from seven.tree_lib import (delete_root, insert_root,
-                            nearest_neighbor_parsimony, small_parsimony,
-                            undirected2directed)
+from seven.tree_lib import nearest_neighbor_parsimony
 
 if __name__ == "__main__":
     with open("./input/input_7_9.txt", "r") as f:
