@@ -8,7 +8,6 @@ if __name__ == "__main__":
         tree: dict[str, list[str]] = defaultdict(list)
         leafs: dict[str, str] = defaultdict(str)
         for idx, line in enumerate(f):
-            # f.readline().strip().split("->")
             first_node, second_node = line.strip().split("->")
             tree[first_node].append(second_node)
             if (
