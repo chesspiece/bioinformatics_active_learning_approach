@@ -12,6 +12,7 @@ numpy = "^1.23"
 scipy = "^1.9"
 pyright = "^1"
 tqdm = "^4"
+suffix-tree = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 ipython = "^8.3.0"

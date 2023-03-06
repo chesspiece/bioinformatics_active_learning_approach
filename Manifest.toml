@@ -2,7 +2,7 @@
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "af0cc6b27c645fdcedd8262289013edc5b988035"
+project_hash = "f80087c4f923d9d4467b27172a30ae545db2f067"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -21,9 +21,9 @@ version = "0.1.0"
 
 [[deps.CodeTracking]]
 deps = ["InteractiveUtils", "UUIDs"]
-git-tree-sha1 = "0e5c14c3bb8a61b3d53b2c0620570c332c8d0663"
+git-tree-sha1 = "4f619d394ac521dc59cb80a2cd8f78578e483a9d"
 uuid = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
-version = "1.2.0"
+version = "1.2.1"
 
 [[deps.Crayons]]
 git-tree-sha1 = "249fe38abf76d48563e2f4556bebd215aa317e15"
@@ -69,16 +69,16 @@ deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[deps.JET]]
-deps = ["InteractiveUtils", "JuliaInterpreter", "LoweredCodeUtils", "MacroTools", "Pkg", "Revise", "Test"]
-git-tree-sha1 = "cb7b43cceacccbeebcc2fd47e75a7f9467ecae74"
+deps = ["InteractiveUtils", "JuliaInterpreter", "LoweredCodeUtils", "MacroTools", "Pkg", "Revise", "SnoopPrecompile", "Test"]
+git-tree-sha1 = "ddc0e2edee0183a00dbe67ce9d74c62b6afb27d0"
 uuid = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
-version = "0.7.1"
+version = "0.7.5"
 
 [[deps.JuliaInterpreter]]
 deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
-git-tree-sha1 = "b289a36229c94e326282f36b3e24416a08dc7bd9"
+git-tree-sha1 = "d9ae7a9081d9b1a3b2a5c1d3dac5e2fdaafbd538"
 uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
-version = "0.9.21"
+version = "0.9.22"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -144,6 +144,12 @@ deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markd
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 version = "1.8.0"
 
+[[deps.Preferences]]
+deps = ["TOML"]
+git-tree-sha1 = "47e5f437cc0e7ef2ce8406ce1e7e24d44915f88d"
+uuid = "21216c6a-2e73-6563-6e65-726566657250"
+version = "1.3.0"
+
 [[deps.Printf]]
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
@@ -175,6 +181,17 @@ version = "0.7.0"
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
+[[deps.SfTree]]
+path = "dev/SfTree/SfTree"
+uuid = "0cbf2a2d-f7ef-400e-8d19-df1aa543c244"
+version = "0.1.0"
+
+[[deps.SnoopPrecompile]]
+deps = ["Preferences"]
+git-tree-sha1 = "e760a70afdcd461cf01a575947738d359234665c"
+uuid = "66db9d55-30c0-4569-8b51-7e840670fc0c"
+version = "1.0.3"
+
 [[deps.Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
 
@@ -184,9 +201,9 @@ uuid = "24f65c1e-0a10-5d3d-8a1f-a83399f3fced"
 version = "1.0.0"
 
 [[deps.SuffixTrees]]
-git-tree-sha1 = "562e588863213f10f3fb64e8cc2bd6306577a23c"
+git-tree-sha1 = "5c09e781f3ecd85b260350b8570506545f66c51f"
 uuid = "430257b6-7d61-4797-9a77-8ecd01b73801"
-version = "0.0.2"
+version = "0.0.4"
 
 [[deps.TOML]]
 deps = ["Dates"]

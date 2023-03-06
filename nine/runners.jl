@@ -1,6 +1,6 @@
 module nine_runners
 
-using BioLib.nine
+import BioLib.nine: construct_trie, prefix_trie_match, lcs
 using SuffixTrees
 using SuffixArrays
 using Printf
@@ -63,7 +63,6 @@ function fourth_task()
         println(f, getlongestrepeatedsubstring(SuffixTree(dna)))
     end
 end
-
 
 
 function fifth_task()
