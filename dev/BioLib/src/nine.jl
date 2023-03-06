@@ -76,17 +76,21 @@ function lcs(str1::AbstractString, str2::AbstractString)::String
     lcs_arr = zeros(Int32, map(x -> x + 1, (length(str1), length(str2))))
     #lcs_arr[1:1, :] .= 0
     #lcs_arr[:, 1:1] .= 0
+    pos = 0
+    mx_ln = 0
 
     for i in 1:length(str1)
         for j in 1:length(str2)
             if str1[i] == str2[j]
                 lcs_arr[i + 1, j + 1] = lcs_arr[i, j] + 1
+                if mx_ln < lcs_arr[i + 1, j + 1] 
+                    mx_ln = lcs_arr[i + 1, j + 1]
+                    pos = j+1
+                end
             end
         end
     end
-    ln = maximum(lcs_arr)
-    _, pos2 = argmax(lcs_arr).I
-    return str2[pos2-ln:pos2-1]
+    return str2[pos-mx_ln:pos-1]
 end
 
 
