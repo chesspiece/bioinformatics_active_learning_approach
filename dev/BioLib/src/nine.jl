@@ -69,9 +69,9 @@ function prefix_trie_match(text::String, trie::Dict{Int32,Dict{Char,Int32}})::Tu
 end
 
 
-function lcs(str1::AbstractString, str2::AbstractString)::String
+function lcs(str1::AbstractString, str2::AbstractString)::AbstractString
     #=
-    Fin longest common substring between two strings using dynamic programming
+    Find longest common substring between two strings using dynamic programming by checking lengths of all common prefixes
     =#
     lcs_arr = zeros(Int32, map(x -> x + 1, (length(str1), length(str2))))
     #lcs_arr[1:1, :] .= 0
@@ -85,12 +85,12 @@ function lcs(str1::AbstractString, str2::AbstractString)::String
                 lcs_arr[i + 1, j + 1] = lcs_arr[i, j] + 1
                 if mx_ln < lcs_arr[i + 1, j + 1] 
                     mx_ln = lcs_arr[i + 1, j + 1]
-                    pos = j+1
+                    pos = j
                 end
             end
         end
     end
-    return str2[pos-mx_ln:pos-1]
+    return str2[pos-mx_ln+1:pos]
 end
 
 
