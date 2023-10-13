@@ -7,19 +7,19 @@ license = "AGPLV3"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-numba = "^0.56"
+numba = "^0.57"
 numpy = "^1.23"
 scipy = "^1.9"
 pyright = "^1"
 tqdm = "^4"
-suffix-tree = "^0.1.0"
+pip = "^23"
 
 [tool.poetry.dev-dependencies]
-ipython = "^8.3.0"
-pytest = "^7.1.2"
+ipython = "^8"
+pytest = "^7"
 black = "^22"
 flake8 = "^4"
-debugpy = "^1.6.5"
+debugpy = "^1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

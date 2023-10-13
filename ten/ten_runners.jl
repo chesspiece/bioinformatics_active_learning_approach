@@ -3,6 +3,7 @@ module ten_runners
 using BioLib.ten
 using Printf
 
+
 function first_task()
     read, states, prob_dict = open("./input/input_10_1.txt", "r") do f
         read = readline(f)

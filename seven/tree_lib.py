@@ -439,7 +439,8 @@ def insert_root(tree: dict[str, list[str]], root_name: str = "root") -> str:
         tree[adj_node].append(root_name)
         return root_name
     except Exception:
-        return "Error"
+        raise Exception("Was unable to inser root into unrooted tree")
+        # return "Error"
 
 
 def delete_root(tree: dict[str, list[str]], root_name: str = "root"):
@@ -461,7 +462,8 @@ def delete_root(tree: dict[str, list[str]], root_name: str = "root"):
         tree[daughter].append(son)
         del tree[root_name]
     except KeyError:
-        return "Root does not exists in the tree"
+        raise Exception("Root does not exists in the tree")
+        # return "Root does not exists in the tree"
 
 
 def nearest_neighbour_tree(
