@@ -1,10 +1,8 @@
 from collections import defaultdict
 from copy import deepcopy
-from dataclasses import dataclass
 
 import numpy as np
 import numpy.typing as npt
-import scipy as scp
 
 from mapped_query import MappedQueue
 from one.skew import hamming_str
@@ -547,6 +545,6 @@ def nearest_neighbor_parsimony(tree, leafe_characters, f):
             for node, node_neighbours in ret_tree.items():
                 for neighbour in node_neighbours:
                     f.write(f"{node}->{neighbour}:{hamming_str(node, neighbour)}\n")
-            f.write(f"\n")
+            f.write("\n")
         idx += 1
     return
