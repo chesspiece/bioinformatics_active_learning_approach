@@ -57,6 +57,7 @@ def lcs_backtrack(str_1, str_2, match_reward=1, mismatch_penalty=0, indel_penalt
                 backtrack[i, j] = 4
     return backtrack, s[len(str_1), len(str_2)]
 
+
 @njit()
 def lcs_backtrack_3d(
     str_1, str_2, str_3, match_reward=1, mismatch_penalty=0, indel_penalty=0
@@ -572,7 +573,8 @@ class Grph_path:
                     visited_list[vrtx] = True
                 else:
                     stack_l.pop()
-                    if not vrtx in sorted_grph:
+                    # if not vrtx in sorted_grph:
+                    if vrtx not in sorted_grph:
                         sorted_grph.append(vrtx)
                     continue
                 for i, _ in self.edges_list[vrtx]:

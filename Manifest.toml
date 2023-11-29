@@ -2,7 +2,7 @@
 
 julia_version = "1.9.2"
 manifest_format = "2.0"
-project_hash = "3daf6813635e2e85b02e87a585f261dbf5c1fd15"
+project_hash = "d41ad58959aa89165ca0ca84c70456bfd75553bc"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -206,12 +206,6 @@ version = "0.7.0"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
-
-[[deps.SfTree]]
-deps = ["Debugger", "Revise"]
-path = "dev/SfTree/SfTree"
-uuid = "0cbf2a2d-f7ef-400e-8d19-df1aa543c244"
-version = "0.1.0"
 
 [[deps.Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
