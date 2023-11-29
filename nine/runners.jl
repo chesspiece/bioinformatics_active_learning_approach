@@ -62,8 +62,7 @@ function third_task()
         return dna
     end
     sf_tree = build_sf_tree(dna)
-    res = Vector{String}()
-    get_edges_names(sf_tree, res)
+    res = get_edges_names(sf_tree)
     open("output.txt", "w") do f
         println(f, join(res, " "))
     end
