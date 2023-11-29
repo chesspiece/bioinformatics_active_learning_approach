@@ -4,7 +4,7 @@ from copy import deepcopy
 import numpy as np
 import numpy.typing as npt
 
-from mapped_query import MappedQueue
+from networkx.utils.mapped_queue import MappedQueue
 from one.skew import hamming_str
 
 
