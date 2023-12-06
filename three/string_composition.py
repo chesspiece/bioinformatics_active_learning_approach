@@ -1,5 +1,5 @@
 if __name__ == "__main__":
-    with open("input_3_1.txt", "r") as f:
+    with open("input/input_3_1.txt", "r") as f:
         k = int(f.readline().strip())
         dna = f.readline().strip()
     res = []

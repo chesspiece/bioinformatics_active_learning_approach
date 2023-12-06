@@ -1,5 +1,6 @@
-#from collections import defaultdict
+# from collections import defaultdict
 from numba import njit, prange
+
 
 @njit()
 def frequent_words(text: str, k: int) -> dict[str, int]:
@@ -14,12 +15,12 @@ def frequent_words(text: str, k: int) -> dict[str, int]:
         Dictionary with frequency of all k-mers in text
     """
     patt_dct: dict[str, int] = dict()
-    for i in range(0, len(text) - k):
-    #for i in prange(0, len(text) - k):
-        if text[i : i + k] in patt_dct:
-            patt_dct[text[i : i + k]] += 1
+    for i in range(0, len(text) - k + 1):
+        # for i in prange(0, len(text) - k):
+        if text[i: i + k] in patt_dct:
+            patt_dct[text[i: i + k]] += 1
         else:
-            patt_dct[text[i : i + k]] = 1
+            patt_dct[text[i: i + k]] = 1
     return patt_dct
 
 

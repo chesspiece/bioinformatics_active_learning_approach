@@ -1,5 +1,5 @@
 if __name__ == "__main__":
-    with open("input_3_2.txt", "r") as f:
+    with open("./input/input_3_2.txt", "r") as f:
         dna_list = f.readline().strip().split()
     res = dna_list[0]
     for i in range(1, len(dna_list)):

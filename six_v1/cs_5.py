@@ -1,6 +1,3 @@
-import numpy as np
-
-from numba.typed import List
 from six_v1.comb_alg import two_breaks_genome_graph
 
 if __name__ == "__main__":
